@@ -1,0 +1,42 @@
+name: A-share market universe and history pilot
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 11 * * 1-5"
+permissions:
+  contents: write
+concurrency:
+  group: market-pilot
+  cancel-in-progress: false
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      MAX_SYMBOLS: "100"
+      WORKERS: "4"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Discover market and collect historical K-lines
+        run: python scripts/market_pilot.py
+      - name: Upload outputs even if some providers fail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-pilot
+          path: data/market/
+          if-no-files-found: warn
+      - name: Save successful dataset
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/market/
+          if ! git diff --cached --quiet; then
+            git commit -m "Update A-share universe and historical pilot"
+            git pull --rebase
+            git push
+          fi
