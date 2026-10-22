@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-21T16:04:07.406088+00:00",
+  "generated_at_utc": "2026-10-22T15:59:14.405545+00:00",
   "requested_symbols": [
     "sh600519",
     "sz000001",
@@ -25,6 +25,6 @@
     "sz300750"
   ],
   "failures": {},
-  "rows": 1200,
+  "rows": 1209,
   "note": "Tencent qfq daily K-lines; no turnover amount. Volume units differ for STAR Market."
 }
